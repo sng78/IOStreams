@@ -7,10 +7,10 @@ public class Main {
         String[] products = {"Молоко", "Хлеб", "Гречневая крупа"};
         int[] prices = {60, 40, 80};
         Basket basket = new Basket(products, prices);
-        File file = new File("basket.txt");
+        File file = new File("data.bin");
 
-        if (file.exists()) {
-            basket = Basket.loadFromTxtFile(file);
+        if(file.exists()) {
+            basket = Basket.loadFromBinFile(file);
             System.out.println("\nКорзина с покупками восстановлена из файла");
             basket.printCart();
         } else {
@@ -35,7 +35,7 @@ public class Main {
             int productNum = Integer.parseInt(parts[0]) - 1; // извлекаем № продукта
             int amount = Integer.parseInt(parts[1]); // извлекаем кол-во
             basket.addToCart(productNum, amount);
-            basket.saveTxt(file);
+            basket.saveBin(file, basket);
         }
 
         basket.printCart();
