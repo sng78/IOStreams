@@ -1,13 +1,13 @@
 import java.io.*;
 
 public class Basket {
-    protected static String[] products;
-    protected static int[] prices;
-    protected static int[] productsBuy;
+    protected String[] products;
+    protected int[] prices;
+    protected int[] productsBuy;
 
     public Basket(String[] products, int[] prices) {
-        Basket.products = products;
-        Basket.prices = prices;
+        this.products = products;
+        this.prices = prices;
         productsBuy = new int[products.length]; //кол-во купленного
     }
 
@@ -33,8 +33,16 @@ public class Basket {
 
     public void saveTxt(File file) {
         try (FileWriter fr = new FileWriter(file, false)) {
-            for (int i = 0; i < products.length; i++) {
-                fr.write(productsBuy[i] + "\n");
+            for (String product : products) {
+                fr.write(product + "@");
+            }
+            fr.write("\n");
+            for (int price : prices) {
+                fr.write(price + "@");
+            }
+            fr.write("\n");
+            for (int productBuy : productsBuy) {
+                fr.write(productBuy + "@");
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -42,17 +50,25 @@ public class Basket {
     }
 
     public static Basket loadFromTxtFile(File textFile) {
-        String line;
-        int items = 0;
-        Basket basket = new Basket(products, prices);
         try (BufferedReader br = new BufferedReader(new FileReader(textFile))) {
-            while ((line = br.readLine()) != null) {
-                productsBuy[items] = Integer.parseInt(line);
-                items += 1;
+            String[] products = br.readLine().split("@");
+
+            String[] pricesStr = br.readLine().split("@");
+            int[] prices = new int[pricesStr.length];
+            for (int i=0; i < pricesStr.length; i++) {
+                prices[i] = Integer.parseInt(pricesStr[i]);
             }
+
+            Basket basket = new Basket(products, prices);
+            String[] productsBuyStr = br.readLine().split("@");
+            for (int i = 0; i < productsBuyStr.length; i++) {
+                basket.productsBuy[i] = Integer.parseInt(productsBuyStr[i]);
+            }
+
+            return basket;
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        return basket;
+        return null;
     }
 }
