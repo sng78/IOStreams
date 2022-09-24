@@ -1,3 +1,5 @@
+package ru.netology;
+
 import java.io.File;
 import java.util.Scanner;
 
@@ -7,10 +9,13 @@ public class Main {
         String[] products = {"Молоко", "Хлеб", "Гречневая крупа"};
         int[] prices = {60, 40, 80};
         Basket basket = new Basket(products, prices);
-        File file = new File("basket.txt");
+        ClientLog clientLog = new ClientLog();
+//        File file = new File("basket.txt");
+        File fileCsv = new File("log.csv");
+        File fileJson = new File("basket.json");
 
-        if (file.exists()) {
-            basket = Basket.loadFromTxtFile(file);
+        if (fileJson.exists()) {
+            basket = Basket.loadFromJsonFile(fileJson);
             System.out.println("\nКорзина с покупками восстановлена из файла");
             basket.printCart();
         } else {
@@ -35,9 +40,11 @@ public class Main {
             int productNum = Integer.parseInt(parts[0]) - 1; // извлекаем № продукта
             int amount = Integer.parseInt(parts[1]); // извлекаем кол-во
             basket.addToCart(productNum, amount);
-            basket.saveTxt(file);
+            clientLog.log(productNum, amount);
         }
 
+        Basket.saveJson(fileJson, basket);
+        clientLog.exportAsCSV(fileCsv);
         basket.printCart();
     }
 }
